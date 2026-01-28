@@ -1,6 +1,10 @@
 using Microsoft.Extensions.FileProviders;
 
-var builder = WebApplication.CreateBuilder(args);
+public partial class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -39,3 +43,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+    }
+} 
+
+
