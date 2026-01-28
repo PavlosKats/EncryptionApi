@@ -38,6 +38,6 @@ namespace EncryptionApi.Controllers
     // Request model for the API
     public class WordRequest
     {
-        public string Word { get; set; }
+        public string? Word { get; set; }
     }
 }
