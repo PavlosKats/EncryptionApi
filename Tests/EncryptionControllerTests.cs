@@ -17,10 +17,10 @@ namespace EncryptionApi.Tests
         }
 
         [Fact]
-        public async Task EncryptEndpoint_ReturnsEncryptedWord()
+        public async Task EncryptEndpoint_ReturnsEncryptedWord_CaesarCipher()
         {
             // Arrange
-            var requestBody = new { word = "HELLO" };
+            var requestBody = new { word = "abcXYZ" };
             var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
             // Act
@@ -31,15 +31,15 @@ namespace EncryptionApi.Tests
             // Assert
             Assert.True(response.IsSuccessStatusCode);
             Assert.NotNull(responseData);
-            Assert.Equal("HELLO", responseData.Original);
-            Assert.Equal("OLLEH", responseData.Encrypted); // Assuming encryption reverses the word
+            Assert.Equal("abcXYZ", responseData.Original);
+            Assert.Equal("defABC", responseData.Encrypted); // Caesar shift of 3
         }
 
         [Fact]
-        public async Task DecryptEndpoint_ReturnsDecryptedWord()
+        public async Task DecryptEndpoint_ReturnsDecryptedWord_CaesarCipher()
         {
             // Arrange
-            var requestBody = new { word = "OLLEH" };
+            var requestBody = new { word = "defABC" };
             var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
             // Act
@@ -50,8 +50,8 @@ namespace EncryptionApi.Tests
             // Assert
             Assert.True(response.IsSuccessStatusCode);
             Assert.NotNull(responseData);
-            Assert.Equal("OLLEH", responseData.Encrypted);
-            Assert.Equal("HELLO", responseData.Decrypted); // Assuming decryption reverses the word back
+            Assert.Equal("defABC", responseData.Encrypted);
+            Assert.Equal("abcXYZ", responseData.Decrypted); // Caesar shift of 3 reversed
         }
 
         private class EncryptResponse
