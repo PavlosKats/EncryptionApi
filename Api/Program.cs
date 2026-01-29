@@ -29,13 +29,15 @@ public partial class Program
         // Enable CORS for all origins, methods, and headers
         app.UseCors();
 
+        app.UseDefaultFiles();
+
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
             RequestPath = ""
         });
 
-        app.UseDefaultFiles();
+        
 
         app.UseAuthorization();
 
