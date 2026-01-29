@@ -6,9 +6,7 @@ public partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container
         builder.Services.AddControllers();
-
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddCors(options =>
@@ -23,29 +21,34 @@ public partial class Program
 
         var app = builder.Build();
 
-        // Middleware configuration
-        //app.UseHttpsRedirection();
+        // Log current directory and files for debugging
+        var currentDir = Directory.GetCurrentDirectory();
+        app.Logger.LogInformation($"Current directory: {currentDir}");
+        
+        if (File.Exists(Path.Combine(currentDir, "Index.html")))
+        {
+            app.Logger.LogInformation("Index.html found in current directory");
+        }
+        else
+        {
+            app.Logger.LogWarning("Index.html NOT found in current directory");
+        }
 
-        // Enable CORS for all origins, methods, and headers
         app.UseCors();
 
         app.UseDefaultFiles();
-
+        
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
+            FileProvider = new PhysicalFileProvider(currentDir),
             RequestPath = ""
         });
 
-        
-
         app.UseAuthorization();
-
-        // Maps controllers like EncryptionController
         app.MapControllers();
 
         app.Run();
     }
-} 
+}
 
 

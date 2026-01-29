@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encrypt & Decrypt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      margin-top: 1rem;
+      max-width: 500px;
+    }
+
+    label, input, button {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    input[type="text"] {
+      padding: 0.5rem;
+      font-size: 1.1rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 0.6rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Encryption & Decryption App</h1>
+  <form id="encryption-form" onsubmit="return false;">
+    <label for="word-input">Enter a word to encrypt:</label>
+    <input type="text" id="word-input" placeholder="e.g., HELLO" required />
+    <button id="encrypt-btn" onclick="encryptWord()">Encrypt</button>
+    <button id="decrypt-btn" onclick="decryptWord()" disabled>Decrypt</button>
+  </form>
+
+  <div id="results" class="result"></div>
+  <div id="error-message" class="result error"></div>
+
+  <script>
+    const baseURL = "/api/encryption"; 
+
+    let encryptedWord = "";
+
+    // Function to encrypt the word
+    async function encryptWord() {
+      const wordInput = document.getElementById("word-input").value.trim();
+      const resultsDiv = document.getElementById("results");
+      const errorDiv = document.getElementById("error-message");
+
+      // Clear results and errors before new request
+      resultsDiv.textContent = "";
+      errorDiv.textContent = "";
+
+      if (!wordInput) {
+        errorDiv.textContent = "Please enter a word.";
+        return;
+      }
+
+      try {
+        // Disable the "Decrypt" button until encryption is done
+        document.getElementById("decrypt-btn").disabled = true;
+
+        // Make a POST request to the /encrypt endpoint
+        const response = await fetch(`${baseURL}/encrypt`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ word: wordInput })
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to encrypt the word.");
+        }
+
+        const data = await response.json();
+
+        if (!data || !data.encrypted) {
+        throw new Error("Invalid response from the server.");
+        }
+
+        encryptedWord = data.encrypted;
+        resultsDiv.innerHTML = `<p>Encrypted Word: ${data.original}</p><p>Decrypted Word: ${data.encrypted}</p>`;
+
+        // Enable the "Decrypt" button after successful encryption
+        document.getElementById("decrypt-btn").disabled = false;
+       } catch (error) {
+          errorDiv.textContent = `Error: ${error.message}`;
+       }
+    }
+
+    // Function to decrypt the encrypted word
+    async function decryptWord() {
+      const resultsDiv = document.getElementById("results");
+      const errorDiv = document.getElementById("error-message");
+
+      resultsDiv.textContent = "";
+      errorDiv.textContent = "";
+
+      if (!encryptedWord) {
+        errorDiv.textContent = "No encrypted word available to decrypt.";
+        return;
+      }
+
+      try {
+        // Make a POST request to the /decrypt endpoint
+        const response = await fetch("/api/encryption/decrypt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ word: encryptedWord })
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to decrypt the word.");
+        }
+
+        const data = await response.json();
+
+         if (!data || !data.decrypted) {
+          throw new Error("Invalid response from the server.");
+        }
+
+        resultsDiv.innerHTML = `<p>Encrypted Word: ${data.encrypted}</p><p>Decrypted Word: ${data.decrypted}</p>`;
+      } catch (error) {
+        errorDiv.textContent = `Error: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
