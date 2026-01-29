@@ -17,4 +17,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\platform\**\*" Pack="true" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
 </Project>
