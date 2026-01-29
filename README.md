@@ -4,10 +4,21 @@ A simple ASP.NET Core Web API for encryption services, with static file hosting 
 
 ## Features
 
+- **Caesar Cipher Encryption:** Encrypts and decrypts words using the Caesar cipher (shift of 3).
 - REST API endpoints for encryption (see `Api/Controllers/EncryptionController.cs`)
 - Serves static files (e.g., `Index.html`)
 - CORS enabled for all origins, methods, and headers
-- Deployed to AWS Elastic Beanstalk on URL http://decryptionapp-env.eba-8nqpy8tw.us-east-1.elasticbeanstalk.com/Index.html
+- Ready for deployment to AWS Elastic Beanstalk with custom Nginx configuration
+
+- Visit http://decryptionapp-env.eba-8nqpy8tw.us-east-1.elasticbeanstalk.com/Index.html  to check the app in action.
+
+## Encryption Model
+
+This app uses the **Caesar cipher** for encryption and decryption.  
+A Caesar cipher shifts each letter in the input by a fixed number of positions (here, 3).  
+For example:  
+- Encrypting `"abcXYZ"` produces `"defABC"`.
+- Decrypting `"defABC"` produces `"abcXYZ"`.
 
 ## Project Structure
 
