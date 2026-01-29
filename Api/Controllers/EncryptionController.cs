@@ -6,6 +6,8 @@ namespace EncryptionApi.Controllers
     [Route("api/encryption")]
     public class EncryptionController : ControllerBase
     {
+        private const int CaesarShift = 3; // You can change the shift value if desired
+
         // POST: /api/encryption/encrypt
         [HttpPost("encrypt")]
         public IActionResult Encrypt([FromBody] WordRequest request)
@@ -15,8 +17,7 @@ namespace EncryptionApi.Controllers
                 return BadRequest(new { error = "Word cannot be empty" });
             }
 
-            // Example encryption logic: Reverse the word
-            var encryptedWord = new string(request.Word.Reverse().ToArray());
+            var encryptedWord = CaesarEncrypt(request.Word, CaesarShift);
             return Ok(new { original = request.Word, encrypted = encryptedWord });
         }
 
@@ -29,9 +30,24 @@ namespace EncryptionApi.Controllers
                 return BadRequest(new { error = "Word cannot be empty" });
             }
 
-            // Example decryption logic: Reverse the word back
-            var decryptedWord = new string(request.Word.Reverse().ToArray());
+            var decryptedWord = CaesarEncrypt(request.Word, 26 - CaesarShift);
             return Ok(new { encrypted = request.Word, decrypted = decryptedWord });
+        }
+
+        // Caesar cipher encryption/decryption helper
+        private static string CaesarEncrypt(string input, int shift)
+        {
+            char ShiftChar(char c)
+            {
+                if (char.IsLetter(c))
+                {
+                    char offset = char.IsUpper(c) ? 'A' : 'a';
+                    return (char)(((c - offset + shift) % 26) + offset);
+                }
+                return c;
+            }
+
+            return new string(input.Select(ShiftChar).ToArray());
         }
     }
 
