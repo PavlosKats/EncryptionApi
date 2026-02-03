@@ -79,7 +79,7 @@ dotnet publish -c Release
 
 ### Deploy to AWS Elastic Beanstalk
 
-1. Ensure `.platform` and `.ebextensions` are in your deployment bundle.
+1. Ensure `.platform` is in your deployment bundle.
 2. Deploy using the AWS EB CLI or your CI/CD pipeline.
 
 ## API Endpoints
