@@ -37,8 +37,6 @@ For example:
 │   └── hooks/
 │       └── postdeploy/
 │           └── 01_configure_nginx.sh
-├── .ebextensions/
-│   └── nginx-proxy.config
 └── .github/
     └── workflows/
         └── aws.yml
